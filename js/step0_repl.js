@@ -1,38 +1,22 @@
-if (typeof module !== 'undefined') {
-    var readline = require('./node_readline');
-    var printer = require('./printer');
-}
+const { readline } = require('./node_readline');
 
-// read
-function READ(str) {
-    return str;
-}
+const READ = (str) => str;
 
-// eval
-function EVAL(ast, env) {
-    return ast;
-}
+const EVAL = (ast, env) => ast;
 
-// print
-function PRINT(exp) {
-    return exp;
-}
+const PRINT = (exp) => exp;
 
-// repl
-var rep = function(str) { return PRINT(EVAL(READ(str), {})); };
+const rep = str => PRINT(EVAL(READ(str)));
 
-// repl loop
-if (typeof require !== 'undefined' && require.main === module) {
-    // Synchronous node.js commandline mode
-    while (true) {
-        var line = readline.readline("user> ");
-        if (line === null) { break; }
-        try {
-            if (line) { printer.println(rep(line)); }
-        } catch (exc) {
-
-            if (exc.stack) { printer.println(exc.stack); }
-            else           { printer.println(exc); }
-        }
+(async function () {
+  while (true) {
+    let line = await readline();
+    if (line === null) {
+      break;
     }
-}
+
+    if (line) {
+      console.log(rep(line));
+    }
+  }
+})();

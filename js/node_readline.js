@@ -1,46 +1,46 @@
-// IMPORTANT: choose one
-var RL_LIB = "libreadline";  // NOTE: libreadline is GPL
-//var RL_LIB = "libedit";
+const ffi = require('ffi');
+const fs = require('fs');
+const path = require('path');
 
-var HISTORY_FILE = require('path').join(process.env.HOME, '.mal-history');
+const RL_LIB = 'libedit';
+const HISTORY_FILE = path.join(process.env.HOME, '.mal-history');
 
-var rlwrap = {}; // namespace for this module in web context
+let rllib = ffi.Library(RL_LIB, {
+  'readline': [ 'string', [ 'string' ] ],
+  'add_history': [ 'int', [ 'string' ] ]
+});
 
-var ffi = require('ffi'),
-    fs = require('fs');
+let rlHistoryLoaded = false;
 
-var rllib = ffi.Library(RL_LIB, {
-    'readline':    [ 'string', [ 'string' ] ],
-    'add_history': [ 'int',    [ 'string' ] ]});
+async function readline(prompt) {
+  prompt = prompt || 'user> ';
 
-var rl_history_loaded = false;
+  if (!rlHistoryLoaded) {
+    rlHistoryLoaded = true;
 
-exports.readline = rlwrap.readline = function(prompt) {
-    prompt = typeof prompt !== 'undefined' ? prompt : "user> ";
-
-    if (!rl_history_loaded) {
-        rl_history_loaded = true;
-        var lines = [];
-        if (fs.existsSync(HISTORY_FILE)) {
-            lines = fs.readFileSync(HISTORY_FILE).toString().split("\n");
-        }
-        // Max of 2000 lines
-        lines = lines.slice(Math.max(lines.length - 2000, 0));
-        for (var i=0; i<lines.length; i++) {
-            if (lines[i]) { rllib.add_history(lines[i]); }
-        }
+    let lines = [];
+    let fileExists = await fs.exists(HISTORY_FILE);
+    if (fileExists) {
+      let content = await fs.readFile(HISTORY_FILE);
+      lines = content.toString().split("\n");
     }
 
-    var line = rllib.readline(prompt);
-    if (line) {
-        rllib.add_history(line);
-        try {
-            fs.appendFileSync(HISTORY_FILE, line + "\n");
-        } catch (exc) {
-            // ignored
-        }
+    lines = lines.slice(Math.max(lines.length - 2000, 0));
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i]) {
+        rllib.add_history(lines[i]);
+      }
     }
+  }
 
-    return line;
+  let line = rllib.readline(prompt);
+  try {
+    await fs.appendFile(HISTORY_FILE, line + "\n");
+  } catch (err) {
+    console.log(err);
+  }
+
+  return line;
 };
-var readline = exports;
+
+exports = module.exports = { readline };
