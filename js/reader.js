@@ -1,3 +1,8 @@
+const Keyword = require('./types/keyword');
+const Vector = require('./types/vector');
+const HashMap = require('./types/hash-map');
+const { zip } = require('./util');
+
 class Reader {
   constructor(tokens) {
     this.tokens = tokens;
@@ -37,9 +42,14 @@ function tokenize(str) {
 function readForm(reader) {
   let token = reader.peek();
 
-  if (token === '(') {
+  switch (token) {
+  case '(':
     return readList(reader);
-  } else {
+  case '[':
+    return readVector(reader);
+  case '{':
+    return readHashMap(reader);
+  default:
     return readAtom(reader);
   }
 }
@@ -75,6 +85,14 @@ function readString(reader) {
   return readSequence(reader, '"', '"');
 }
 
+function readVector(reader) {
+  return new Vector(readSequence(reader, '[', ']'));
+}
+
+function readHashMap(reader) {
+  return new HashMap(zip(readSequence(reader, '{', '}')));
+}
+
 function readAtom(reader) {
   let token = reader.next();
 
@@ -86,6 +104,8 @@ function readAtom(reader) {
     return token.slice(1, token.length - 1).replace(/\\(.)/g, (_, char) => {
       return char === 'n' ? "\n" : char;
     });
+  } else if (token[0] === ':') {
+    return new Keyword(token);
   } else if (token === 'nil') {
     return null;
   } else if (token === 'true') {

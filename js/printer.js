@@ -1,4 +1,8 @@
 const process = require('process');
+const util = require('util');
+const Keyword = require('./types/keyword');
+const Vector = require('./types/vector');
+const HashMap = require('./types/hash-map');
 
 function printStr(data, printReadably = true) {
   if (data === null) {
@@ -11,13 +15,18 @@ function printStr(data, printReadably = true) {
   case String:
     str = `"${data}"`;
     break;
-  case Boolean:
-  case Number:
-    str = data.toString();
-    break;
   case Array:
+  case Vector:
     str = `(${data.map(printStr).join(' ')})`;
     break;
+  case Keyword:
+    str = data.slice(1);
+    break;
+  case HashMap:
+    str = util.inspect(data, false, null);
+    break;
+  case Boolean:
+  case Number:
   default:
     str = data.toString();
     break;
