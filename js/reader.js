@@ -1,7 +1,7 @@
 const Keyword = require('./types/keyword');
 const Vector = require('./types/vector');
 const HashMap = require('./types/hash-map');
-const { zip } = require('./util');
+const { zip, exists } = require('./util');
 
 class Reader {
   constructor(tokens) {
@@ -41,6 +41,10 @@ function tokenize(str) {
 
 function readForm(reader) {
   let token = reader.peek();
+
+  if (!exists(token)) {
+    return null;
+  }
 
   switch (token) {
   case '(':

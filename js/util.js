@@ -13,4 +13,8 @@ function zip(pairList) {
   return obj;
 }
 
-exports = module.exports = { zip };
+function exists(val) {
+  return (val !== null && typeof val !== 'undefined');
+}
+
+exports = module.exports = { zip, exists };
