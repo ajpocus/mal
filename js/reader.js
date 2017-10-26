@@ -54,7 +54,7 @@ function readForm(reader) {
   }
 }
 
-function readSequence(reader, start = '(', end = '(') {
+function readSequence(reader, start = '(', end = ')') {
   let token = reader.next();
   let list = [];
 
@@ -64,7 +64,7 @@ function readSequence(reader, start = '(', end = '(') {
 
   while ((token = reader.peek()) !== end) {
     if (!token) {
-      let errorMsg = `Expected '${end}', got EOF"`;
+      let errorMsg = `Expected '${end}', got EOF`;
       console.log(errorMsg);
       throw new Error(errorMsg);
     }
@@ -72,7 +72,7 @@ function readSequence(reader, start = '(', end = '(') {
     list.push(readForm(reader));
   }
 
-  reader.next();
+  token = reader.next();
 
   return list;
 }
@@ -106,6 +106,8 @@ function readAtom(reader) {
     });
   } else if (token[0] === ':') {
     return new Keyword(token);
+  } else if (token[0] === ';') {
+    return null;
   } else if (token === 'nil') {
     return null;
   } else if (token === 'true') {

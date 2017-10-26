@@ -4,20 +4,15 @@ const Keyword = require('./types/keyword');
 const Vector = require('./types/vector');
 const HashMap = require('./types/hash-map');
 
-function printStr(data, printReadably = true) {
-  if (data === null) {
-    return data;
-  }
-
+function repr(data) {
   let str;
-
   switch (data.constructor) {
   case String:
     str = `"${data}"`;
     break;
   case Array:
   case Vector:
-    str = `(${data.map(printStr).join(' ')})`;
+    str = `(${data.map(repr).join(' ')})`;
     break;
   case Keyword:
     str = data.slice(1);
@@ -32,15 +27,22 @@ function printStr(data, printReadably = true) {
     break;
   }
 
-  let printFn;
+  return str;
+}
 
-  if (printReadably) {
-    printFn = console.log;
-  } else {
-    printFn = process.stdout.write;
+function printStr(data, printReadably = true) {
+  if (data === null) {
+    return data;
   }
 
-  return printFn(str);
+  let str = repr(data);
+
+  if (printReadably) {
+    console.log(str);
+  } else {
+    console.log("prcess.stdout");
+    process.stdout.write(str);
+  }
 }
 
 exports = module.exports = { printStr };

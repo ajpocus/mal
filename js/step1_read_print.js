@@ -26,3 +26,5 @@ const rep = str => PRINT(EVAL(READ(str)));
     }
   }
 })();
+
+exports = module.exports = rep;
