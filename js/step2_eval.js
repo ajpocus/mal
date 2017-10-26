@@ -1,16 +1,9 @@
 const { readline } = require('./node_readline');
-const { readStr } = require('./reader');
+const { readInput } = require('./reader');
 const { printStr } = require('./printer');
 
-let env = {
-  '+': (a, b) => a + b,
-  '-': (a, b) => a - b,
-  '*': (a, b) => a * b,
-  '/': (a, b) => a / b
-};
-
 const READ = (str) => {
-  return readStr(str);
+  return readInput(str);
 };
 
 const EVAL = (ast, env) => ast;
@@ -33,3 +26,5 @@ const rep = str => PRINT(EVAL(READ(str)));
     }
   }
 })();
+
+exports = module.exports = rep;
