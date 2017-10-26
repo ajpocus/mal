@@ -1,6 +1,4 @@
-const Keyword = require('./types/keyword');
-const Vector = require('./types/vector');
-const HashMap = require('./types/hash-map');
+const { Keyword, Vector, HashMap } = require('./types');
 const { zip, exists } = require('./util');
 
 class Reader {
