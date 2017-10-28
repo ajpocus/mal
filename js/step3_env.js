@@ -36,7 +36,7 @@ const EVAL = (ast, env) => {
         let [key, value] = ast.slice(1);
         return env.set(key, EVAL(value, env));
       case Symbol.for('let'):
-        let [bindings, exprs] = ast;
+        let [bindings, exprs] = ast.slice(1);
         let letEnv = new Env(env);
 
         for (let i = 0; i < bindings.length; i += 2) {

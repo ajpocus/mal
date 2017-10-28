@@ -33,7 +33,7 @@ function repr(data) {
 
 function printStr(data, printReadably = true) {
   if (!exists(data)) {
-    return data;
+    return;
   }
 
   let str = repr(data);
