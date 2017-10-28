@@ -11,7 +11,6 @@ env.set(Symbol.for('*'), (a, b) => { return a * b; });
 env.set(Symbol.for('/'), (a, b) => { return a / b; });
 
 function evalAst(ast, env) {
-  console.log("evalAst: ", ast, env);
   switch (ast.constructor) {
   case Symbol:
     return env.get(ast);
@@ -32,7 +31,6 @@ const EVAL = (ast, env) => {
     if (ast.length === 0) {
       return ast;
     } else {
-      console.log("RMME: form", ast);
       switch (ast[0]) {
       case Symbol.for('def'):
         let [key, value] = ast.slice(1);
@@ -73,7 +71,7 @@ const rep = str => PRINT(EVAL(READ(str), env));
     }
 
     if (line) {
-      console.log(rep(line));
+      rep(line);
     }
   }
 })();

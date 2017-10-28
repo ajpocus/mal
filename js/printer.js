@@ -6,7 +6,6 @@ const HashMap = require('./types/hash-map');
 const { exists } = require('./util');
 
 function repr(data) {
-  console.log("DATA: ", data);
   let str;
   switch (data.constructor) {
   case String:
