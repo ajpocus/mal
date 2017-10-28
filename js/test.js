@@ -1,3 +1,3 @@
-const rep = require('./step2_eval');
+const rep = require('./step3_env');
 
-rep("(+ 1 1)");
+rep("(def a 1)");

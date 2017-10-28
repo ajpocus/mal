@@ -3,8 +3,10 @@ const util = require('util');
 const Keyword = require('./types/keyword');
 const Vector = require('./types/vector');
 const HashMap = require('./types/hash-map');
+const { exists } = require('./util');
 
 function repr(data) {
+  console.log("DATA: ", data);
   let str;
   switch (data.constructor) {
   case String:
@@ -31,12 +33,11 @@ function repr(data) {
 }
 
 function printStr(data, printReadably = true) {
-  if (data === null) {
+  if (!exists(data)) {
     return data;
   }
 
   let str = repr(data);
-
   if (printReadably) {
     console.log(str);
   } else {
