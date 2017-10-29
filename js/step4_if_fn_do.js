@@ -2,13 +2,10 @@ const { readline } = require('./node_readline');
 const { readInput } = require('./reader');
 const { printStr } = require('./printer');
 const { Keyword, Vector, HashMap } = require('./types');
+const { ns } = require('./core');
 const Env = require('./env');
 
-let env = new Env();
-env.set(Symbol.for('+'), (a, b) => { return a + b; });
-env.set(Symbol.for('-'), (a, b) => { return a - b; });
-env.set(Symbol.for('*'), (a, b) => { return a * b; });
-env.set(Symbol.for('/'), (a, b) => { return a / b; });
+let env = new Env(ns);
 
 function evalAst(ast, env) {
   switch (ast.constructor) {
