@@ -5,9 +5,6 @@ let ns = {
   [Symbol.for('-')]: (a, b) => { return a - b; },
   [Symbol.for('*')]: (a, b) => { return a * b; },
   [Symbol.for('/')]: (a, b) => { return a / b; },
-  [Symbol.for('prn')]: (form) => {
-    return printStr(form);
-  },
   [Symbol.for('list')]: () => {
     return [...arguments];
   },
@@ -36,7 +33,41 @@ let ns = {
   [Symbol.for('<')]: (a, b) => { return a < b; },
   [Symbol.for('<=')]: (a, b) => { return a <= b; },
   [Symbol.for('>')]: (a, b) => { return a > b; },
-  [Symbol.for('>=')]: (a, b) => { return a >= b; }
+  [Symbol.for('>=')]: (a, b) => { return a >= b; },
+  [Symbol.for('pr-str')]: (...args) => {
+    args.forEach((arg) => {
+      printStr(arg, true);
+    });
+
+    return args.join(' ');
+  },
+  [Symbol.for('str')]: (...args) => {
+    args.forEach((arg) => {
+      printStr(arg, false);
+    });
+
+    return args.join('');
+  },
+  [Symbol.for('prn')]: (...args) => {
+    args.forEach((arg) => {
+      printStr(arg, true);
+    });
+
+    let str = args.join(' ');
+    printStr(str, true);
+
+    return null;
+  },
+  [Symbol.for('println')]: (...args) => {
+    args.forEach((arg) => {
+      printStr(arg, false);
+    });
+
+    let str = args.join(' ');
+    printStr(str, true);
+
+    return null;
+  }
 };
 
 exports = module.exports = { ns };

@@ -43,7 +43,6 @@ function printStr(data, printReadably = true) {
   if (printReadably) {
     console.log(str);
   } else {
-    console.log("prcess.stdout");
     process.stdout.write(str);
   }
 }
