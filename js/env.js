@@ -6,9 +6,15 @@ class Env {
     this.data = {};
 
     if (exists(binds) && exists(exprs)) {
-      binds.forEach((bind, idx) => {
-        this.set(bind, exprs[idx]);
-      });
+      for (let i = 0; i < binds.length; i++) {
+        let bind = binds[i];
+        if (bind === Symbol.for('&')) {
+          this.set(binds[i+1], exprs.slice(i));
+          break;
+        }
+
+        this.set(bind, exprs[i]);
+      }
     }
   }
 

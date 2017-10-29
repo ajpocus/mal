@@ -70,7 +70,7 @@ const EVAL = (ast, env) => {
       case Symbol.for('fn'):
         return function () {
           let [bindings, body] = ast.slice(1);
-          let closureEnv = new Env(env, bindings, arguments);
+          let closureEnv = new Env(env, bindings, Array.from(arguments));
 
           return EVAL(body, closureEnv);
         };
@@ -89,6 +89,8 @@ const PRINT = (exp) => {
 };
 
 const rep = str => PRINT(EVAL(READ(str), env));
+
+rep("(def not (fn (a) (if a false true)))");
 
 (async function () {
   while (true) {
