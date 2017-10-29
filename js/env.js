@@ -1,7 +1,15 @@
+const { exists } = require('./util');
+
 class Env {
-  constructor(outer) {
+  constructor(outer, binds, exprs) {
     this.outer = outer;
     this.data = {};
+
+    if (exists(binds) && exists(exprs)) {
+      binds.forEach((bind, idx) => {
+        this.set(bind, exprs[idx]);
+      });
+    }
   }
 
   set(key, value) {

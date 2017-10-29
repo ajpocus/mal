@@ -21,6 +21,9 @@ function repr(data) {
   case HashMap:
     str = util.inspect(data, false, null);
     break;
+  case Function:
+    str = `#<function ${data.name || 'anonymous'}>`;
+    break;
   case Boolean:
   case Number:
   default:

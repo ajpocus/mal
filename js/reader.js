@@ -114,7 +114,7 @@ function readAtom(reader) {
     return null;
   } else if (token === 'true') {
     return true;
-  } else if (token === false) {
+  } else if (token === 'false') {
     return false;
   } else { // symbol
     return Symbol.for(token);
