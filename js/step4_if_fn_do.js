@@ -5,7 +5,12 @@ const { Keyword, Vector, HashMap } = require('./types');
 const { ns } = require('./core');
 const Env = require('./env');
 
-let env = new Env(ns);
+let env = new Env();
+let keys = Object.getOwnPropertySymbols(ns);
+for (let i = 0; i < keys.length; i++) {
+  let key = keys[i];
+  env.set(key, ns[key]);
+}
 
 function evalAst(ast, env) {
   switch (ast.constructor) {
