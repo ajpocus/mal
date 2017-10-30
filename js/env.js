@@ -1,11 +1,11 @@
-const { exists } = require('./util');
+const _ = require('lodash');
 
 class Env {
   constructor(outer, binds, exprs) {
     this.outer = outer;
     this.data = {};
 
-    if (exists(binds) && exists(exprs)) {
+    if (!_.isNil(binds) && !_.isNil(exprs)) {
       for (let i = 0; i < binds.length; i++) {
         let bind = binds[i];
         if (bind === Symbol.for('&')) {

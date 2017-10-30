@@ -4,6 +4,7 @@ const { printStr } = require('./printer');
 const { Keyword, Vector, HashMap } = require('./types');
 const { ns } = require('./core');
 const Env = require('./env');
+const { debug } = require('./util');
 
 let env = new Env();
 let keys = Object.getOwnPropertySymbols(ns);
@@ -25,10 +26,13 @@ function evalAst(ast, env) {
 }
 
 const READ = (str) => {
+  debug("READ: ", str);
   return readInput(str);
 };
 
 const EVAL = (ast, env) => {
+  debug("EVAL", "ast: ", ast, "env: ", env);
+
   let bindings, exprs;
 
   if (ast.constructor === Array || ast.constructor === Vector) {
@@ -57,7 +61,7 @@ const EVAL = (ast, env) => {
           return evalAst(expr, env);
         });
 
-        return results[results.length - 1];
+        return EVAL(results[results.length - 1], env);
       case Symbol.for('if'):
         let [cond, thenExprs, elseExprs] = ast.slice(1);
         let result = EVAL(cond, env);
@@ -76,7 +80,8 @@ const EVAL = (ast, env) => {
         };
       default:
         let form = evalAst(ast, env);
-        return form[0].apply(this, form.slice(1));
+        let f = form[0];
+        return f.apply(f, form.slice(1));
       }
     }
   } else {
@@ -85,6 +90,8 @@ const EVAL = (ast, env) => {
 };
 
 const PRINT = (exp) => {
+  debug("PRINT", exp);
+
   return printStr(exp);
 };
 

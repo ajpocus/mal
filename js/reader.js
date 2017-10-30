@@ -1,5 +1,6 @@
+const _ = require('lodash');
 const { Keyword, Vector, HashMap } = require('./types');
-const { zip, exists } = require('./util');
+const { zip } = require('./util');
 
 class Reader {
   constructor(tokens) {
@@ -40,7 +41,7 @@ function tokenize(str) {
 function readForm(reader) {
   let token = reader.peek();
 
-  if (!exists(token)) {
+  if (_.isNil(token)) {
     return null;
   }
 

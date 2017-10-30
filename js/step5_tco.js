@@ -1,9 +1,11 @@
+const _ = require('lodash');
 const { readline } = require('./node_readline');
 const { readInput } = require('./reader');
 const { printStr } = require('./printer');
 const { Keyword, Vector, HashMap } = require('./types');
 const { ns } = require('./core');
 const Env = require('./env');
+const { debug } = require('./util');
 
 let env = new Env();
 let keys = Object.getOwnPropertySymbols(ns);
@@ -25,12 +27,18 @@ function evalAst(ast, env) {
 }
 
 const READ = (str) => {
+  debug("READ", str);
+
   return readInput(str);
 };
 
 const EVAL = (ast, env) => {
   while (true) {
     let bindings, exprs;
+
+    debug("EVAL", ast, env);
+
+    if (_.isNil(ast)) { return null; }
 
     if (ast.constructor === Array || ast.constructor === Vector) {
       if (ast.length === 0) {
@@ -86,14 +94,14 @@ const EVAL = (ast, env) => {
             }
           };
         default:
-          let form = evalAst(ast, env);
-          let f = form[0];
+          let [f, ...args] = evalAst(ast, env);
+
           switch (f.constructor) {
           case Function:
-            return f.apply(f, form.slice(1));
+            return f.apply(f, args);
           case Object:
+            env = new Env(f.env, f.params, args);
             ast = f.ast;
-            env = new Env(f.env, f.params, ast.slice(2));
             continue;
           }
         }
@@ -101,11 +109,12 @@ const EVAL = (ast, env) => {
     } else {
       return evalAst(ast, env);
     }
-
   }
 };
 
 const PRINT = (exp) => {
+  debug("PRINT", exp);
+
   return printStr(exp);
 };
 

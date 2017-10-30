@@ -1,12 +1,15 @@
 const process = require('process');
 const util = require('util');
+const _ = require('lodash');
 const Keyword = require('./types/keyword');
 const Vector = require('./types/vector');
 const HashMap = require('./types/hash-map');
-const { exists } = require('./util');
 
 function repr(data) {
   let str;
+
+  if (_.isNil(data)) { return 'nil'; }
+
   switch (data.constructor) {
   case String:
     str = `"${data}"`;
@@ -24,6 +27,9 @@ function repr(data) {
   case Function:
     str = `#<function ${data.name || 'anonymous'}>`;
     break;
+  case Object:
+    str = `#<function ${data.fn.name || 'anonymous'}>`;
+    break;
   case Boolean:
   case Number:
   default:
@@ -35,11 +41,8 @@ function repr(data) {
 }
 
 function printStr(data, printReadably = true) {
-  if (!exists(data)) {
-    return;
-  }
-
   let str = repr(data);
+
   if (printReadably) {
     console.log(str);
   } else {
