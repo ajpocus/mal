@@ -15,11 +15,11 @@ let ns = {
   [Symbol.for('list?')]: (form) => {
     return form.constructor === Array;
   },
-  [Symbol.for('empty?')]: (list) => {
-    return list.length === 0;
+  [Symbol.for('empty?')]: (lst) => {
+    return lst.length === 0;
   },
-  [Symbol.for('count')]: (list) => {
-    return list.length;
+  [Symbol.for('count')]: (lst) => {
+    return lst.length;
   },
   [Symbol.for('=')]: (form1, form2) => {
     if (form1.constructor === Array && form2.constructor === Array) {
@@ -82,6 +82,17 @@ let ns = {
   [Symbol.for('swap!')]: (atom, func, ...args) => {
     atom.value = func.fn(...[atom.value].concat(args));
     return atom.value;
+  },
+  [Symbol.for('cons')]: (el, lst) => {
+    lst.unshift(el);
+    return lst;
+  },
+  [Symbol.for('concat')]: (...lsts) => {
+    if (lsts) {
+      return Array.prototype.concat.apply([], lsts);
+    } else {
+      return [];
+    }
   }
 };
 

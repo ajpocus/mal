@@ -55,6 +55,9 @@ function readForm(reader) {
   case '@':
     reader.next();
     return [Symbol.for('deref'), readForm(reader)];
+  case "'":
+    reader.next();
+    return [Symbol.for('quote'), readForm(reader)];
   default:
     return readAtom(reader);
   }
