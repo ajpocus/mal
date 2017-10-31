@@ -1,18 +1,18 @@
 ;; Testing trivial macros
-(defmacro! one (fn* () 1))
+(defmacro one (fn () 1))
 (one)
 ;=>1
-(defmacro! two (fn* () 2))
+(defmacro two (fn () 2))
 (two)
 ;=>2
 
 ;; Testing unless macros
-(defmacro! unless (fn* (pred a b) `(if ~pred ~b ~a)))
+(defmacro unless (fn (pred a b) `(if ~pred ~b ~a)))
 (unless false 7 8)
 ;=>7
 (unless true 7 8)
 ;=>8
-(defmacro! unless2 (fn* (pred a b) `(if (not ~pred) ~a ~b)))
+(defmacro unless2 (fn (pred a b) `(if (not ~pred) ~a ~b)))
 (unless2 false 7 8)
 ;=>7
 (unless2 true 7 8)
@@ -23,8 +23,8 @@
 ;=>(if (not 2) 3 4)
 
 ;; Testing evaluation of macro result
-(defmacro! identity (fn* (x) x))
-(let* (a 123) (identity a))
+(defmacro identity (fn (x) x))
+(let (a 123) (identity a))
 ;=>123
 
 
@@ -100,9 +100,9 @@ x
 (cond false 7 false 8 false 9)
 ;=>nil
 
-;; Testing EVAL in let*
+;; Testing EVAL in let
 
-(let* (x (or nil "yes")) x)
+(let (x (or nil "yes")) x)
 ;=>"yes"
 
 
@@ -138,9 +138,9 @@ x
 (rest [10 11 12])
 ;=>(11 12)
 
-;; Testing EVAL in vector let*
+;; Testing EVAL in vector let
 
-(let* [x (or nil "yes")] x)
+(let [x (or nil "yes")] x)
 ;=>"yes"
 
 ;;
