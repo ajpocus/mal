@@ -5,7 +5,7 @@ const { printStr } = require('./printer');
 const { Keyword, Vector, HashMap } = require('./types');
 const { ns } = require('./core');
 const Env = require('./env');
-const { debug } = require('./util');
+const { debug, isPair } = require('./util');
 
 let env = new Env();
 let keys = Object.getOwnPropertySymbols(ns);
@@ -30,6 +30,22 @@ function evalAst(ast, env) {
   default:
     return ast;
   }
+}
+
+function quasiquote(ast) {
+  if (!isPair(ast)) {
+    return [Symbol.for('quote'), ast];
+  }
+
+  if (ast[0] === Symbol.for('unquote')) {
+    return ast[1];
+  }
+
+  if (isPair(ast[0]) && ast[0][0] === Symbol.for('splice-unquote')) {
+    return [Symbol.for('concat'), ast[0][1], quasiquote(ast.slice(1))];
+  }
+
+  return [Symbol.for('cons'), quasiquote(ast[0]), quasiquote(ast.slice(1))];
 }
 
 const READ = (str) => {
@@ -101,6 +117,9 @@ const EVAL = (ast, env) => {
           };
         case Symbol.for('quote'):
           return ast[1];
+        case Symbol.for('quasiquote'):
+          ast = quasiquote(ast[1]);
+          continue;
         default:
           let [f, ...args] = evalAst(ast, env);
 

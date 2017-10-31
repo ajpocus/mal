@@ -32,4 +32,8 @@ function debug(...things) {
   return process.env.DEBUG;
 }
 
-exports = module.exports = { zip, debug };
+function isPair(lst) {
+  return !!lst.length;
+}
+
+exports = module.exports = { zip, debug, isPair };
