@@ -58,6 +58,15 @@ function readForm(reader) {
   case "'":
     reader.next();
     return [Symbol.for('quote'), readForm(reader)];
+  case '`':
+    reader.next();
+    return [Symbol.for('quasiquote'), readForm(reader)];
+  case '~':
+    reader.next();
+    return [Symbol.for('unquote'), readForm(reader)];
+  case '~@':
+    reader.next();
+    return [Symbol.for('splice-unquote'), readForm(reader)];
   default:
     return readAtom(reader);
   }
