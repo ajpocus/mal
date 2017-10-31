@@ -52,6 +52,9 @@ function readForm(reader) {
     return readVector(reader);
   case '{':
     return readHashMap(reader);
+  case '@':
+    reader.next();
+    return [Symbol.for('deref'), readForm(reader)];
   default:
     return readAtom(reader);
   }

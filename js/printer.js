@@ -1,9 +1,7 @@
 const process = require('process');
 const util = require('util');
 const _ = require('lodash');
-const Keyword = require('./types/keyword');
-const Vector = require('./types/vector');
-const HashMap = require('./types/hash-map');
+const { Keyword, Vector, HashMap, Atom } = require('./types');
 
 function repr(data) {
   let str;
@@ -30,6 +28,9 @@ function repr(data) {
   case Object:
     str = `#<function ${data.fn.name || 'anonymous'}>`;
     break;
+  case Atom:
+    str = '#<atom>';
+    break;
   case Boolean:
   case Number:
   default:
@@ -47,6 +48,7 @@ function printStr(data, printReadably = true) {
     console.log(str);
   } else {
     process.stdout.write(str);
+    console.log();
   }
 }
 

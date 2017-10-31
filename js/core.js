@@ -1,4 +1,8 @@
+const fs = require('fs');
+const util = require('util');
 const { printStr } = require('./printer');
+const { readInput } = require('./reader');
+const { Atom } = require('./types');
 
 let ns = {
   [Symbol.for('+')]: (a, b) => { return a + b; },
@@ -42,31 +46,42 @@ let ns = {
     return args.join(' ');
   },
   [Symbol.for('str')]: (...args) => {
-    args.forEach((arg) => {
-      printStr(arg, false);
-    });
-
     return args.join('');
   },
   [Symbol.for('prn')]: (...args) => {
-    args.forEach((arg) => {
-      printStr(arg, true);
-    });
-
     let str = args.join(' ');
-    printStr(str, true);
+    printStr(str, false);
 
     return null;
   },
   [Symbol.for('println')]: (...args) => {
-    args.forEach((arg) => {
-      printStr(arg, false);
-    });
-
     let str = args.join(' ');
     printStr(str, true);
 
     return null;
+  },
+  [Symbol.for('read-string')]: (...args) => {
+    return readInput(args);
+  },
+  [Symbol.for('slurp')]: (filePath) => {
+    return fs.readFileSync(filePath, { encoding: 'utf-8' });
+  },
+  [Symbol.for('atom')]: (value) => {
+    return new Atom(value);
+  },
+  [Symbol.for('atom?')]: (form) => {
+    return form.constructor === Atom;
+  },
+  [Symbol.for('deref')]: (atom) => {
+    return atom.value;
+  },
+  [Symbol.for('reset!')]: (atom, value) => {
+    atom.value = value;
+    return atom.value;
+  },
+  [Symbol.for('swap!')]: (atom, func, ...args) => {
+    atom.value = func.fn(...[atom.value].concat(args));
+    return atom.value;
   }
 };
 
