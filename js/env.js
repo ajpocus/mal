@@ -41,6 +41,17 @@ class Env {
       throw new Error(`Key ${key.toString()} not found`);
     }
   }
+
+  has(key) {
+    let hasKey = Object.getOwnPropertySymbols(this.data).indexOf(key) !== -1;
+    if (hasKey) {
+      return hasKey;
+    } else if (this.outer) {
+      return this.outer.has(key);
+    } else {
+      return false;
+    }
+  }
 }
 
 exports = module.exports = Env;

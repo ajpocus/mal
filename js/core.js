@@ -93,6 +93,27 @@ let ns = {
     } else {
       return [];
     }
+  },
+  [Symbol.for('nth')]: (lst, idx) => {
+    if (idx < 0 || idx >= lst.length) {
+      throw new Error('Index out of range');
+    }
+
+    return lst[idx];
+  },
+  [Symbol.for('first')]: (lst) => {
+    try {
+      return lst[0];
+    } catch (err) {
+      return null;
+    }
+  },
+  [Symbol.for('rest')]: (lst) => {
+    try {
+      return lst.slice(1);
+    } catch (err) {
+      return [];
+    }
   }
 };
 

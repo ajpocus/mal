@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const util = require('util');
 const { readline } = require('./node_readline');
 const { readInput } = require('./reader');
 const { printStr } = require('./printer');
@@ -49,11 +50,19 @@ function quasiquote(ast) {
 }
 
 function isMacroCall(ast, env) {
-  return ast.contructor === Array && ast[0].constructor === Symbol && ast[0] in env && env.get(ast[0]).isMacro;
+  if (env.has(ast[0])) {
+    console.log("IS MAC: ", env.get(ast[0]).isMacro);
+  }
+
+  return ast.contructor === Array &&
+    ast[0].constructor === Symbol &&
+    env.has(ast[0]) &&
+    env.get(ast[0]).isMacro;
 }
 
 function macroexpand(ast, env) {
   while (isMacroCall(ast, env)) {
+    console.log("STEP");
     let macroFn = env.get(ast[0]);
     ast = macroFn.fn(...ast.slice(1));
   }
@@ -122,18 +131,21 @@ const EVAL = (ast, env) => {
             continue;
           }
         case Symbol.for('fn'):
-          return {
+          let fn = function () {
+            let [bindings, body] = ast.slice(1);
+            let closureEnv = new Env(env, bindings, Array.from(arguments));
+
+            return EVAL(body, closureEnv);
+          };
+
+          Object.assign(fn, {
             ast: ast[2],
             params: ast[1],
-            env: env,
-            isMacro: false,
-            fn: function () {
-              let [bindings, body] = ast.slice(1);
-              let closureEnv = new Env(env, bindings, Array.from(arguments));
+            env,
+            isMacro: false
+          });
 
-              return EVAL(body, closureEnv);
-            }
-          };
+          return fn;
         case Symbol.for('quote'):
           return ast[1];
         case Symbol.for('quasiquote'):
@@ -141,20 +153,21 @@ const EVAL = (ast, env) => {
           continue;
         case Symbol.for('defmacro'):
           [key, value] = ast.slice(1);
-          value.isMacro = true;
-          return env.set(key, EVAL(value, env));
+          let func = EVAL(value, env);
+          func.isMacro = true;
+          console.log("FUNK: ", util.inspect(func, false, null));
+          return env.set(key, func);
         case Symbol.for('macroexpand'):
           return macroexpand(ast[1], env);
         default:
           let [f, ...args] = evalAst(ast, env);
 
-          switch (f.constructor) {
-          case Function:
-            return f.apply(f, args);
-          case Object:
+          if (f.ast) {
             env = new Env(f.env, f.params, args);
             ast = f.ast;
             continue;
+          } else {
+            return f.apply(f, args);
           }
         }
       }
@@ -166,7 +179,7 @@ const EVAL = (ast, env) => {
 
 const PRINT = (exp) => {
   debug("PRINT", exp);
-
+  console.log("EXP: ", exp);
   return printStr(exp);
 };
 
@@ -174,6 +187,8 @@ const rep = str => PRINT(EVAL(READ(str), env));
 
 rep('(def not (fn (a) (if a false true)))');
 rep('(def load-file (fn (f) (eval (read-string (str "(do " (slurp f) ")"))))))');
+rep(`(defmacro cond (fn (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw "odd number of forms to cond")) (cons 'cond (rest (rest xs)))))))`);
+rep('(defmacro or (fn (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) `(let (or_FIXME ~(first xs)) (if or_FIXME or_FIXME (or ~@(rest xs))))))))');
 
 (async function () {
   while (true) {

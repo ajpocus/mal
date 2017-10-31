@@ -25,9 +25,6 @@ function repr(data) {
   case Function:
     str = `#<function ${data.name || 'anonymous'}>`;
     break;
-  case Object:
-    str = `#<function ${data.fn.name || 'anonymous'}>`;
-    break;
   case Atom:
     str = '#<atom>';
     break;
