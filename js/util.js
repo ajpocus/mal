@@ -33,7 +33,7 @@ function debug(...things) {
 }
 
 function isPair(lst) {
-  return !!lst.length;
+  return lst.constructor === Array && lst.length > 0;
 }
 
 exports = module.exports = { zip, debug, isPair };

@@ -50,11 +50,7 @@ function quasiquote(ast) {
 }
 
 function isMacroCall(ast, env) {
-  if (env.has(ast[0])) {
-    console.log("IS MAC: ", env.get(ast[0]).isMacro);
-  }
-
-  return ast.contructor === Array &&
+  return ast.constructor === Array &&
     ast[0].constructor === Symbol &&
     env.has(ast[0]) &&
     env.get(ast[0]).isMacro;
@@ -62,9 +58,8 @@ function isMacroCall(ast, env) {
 
 function macroexpand(ast, env) {
   while (isMacroCall(ast, env)) {
-    console.log("STEP");
     let macroFn = env.get(ast[0]);
-    ast = macroFn.fn(...ast.slice(1));
+    ast = macroFn(...ast.slice(1));
   }
 
   return ast;
@@ -85,101 +80,98 @@ const EVAL = (ast, env) => {
     if (_.isNil(ast)) { return null; }
 
     ast = macroexpand(ast, env);
+
     if (ast.constructor !== Array) {
       return evalAst(ast, env);
     }
 
-    if (ast.constructor === Array || ast.constructor === Vector) {
-      if (ast.length === 0) {
-        return ast;
-      } else {
-        switch (ast[0]) {
-        case Symbol.for('def'):
-          [key, value] = ast.slice(1);
-          return env.set(key, EVAL(value, env));
-        case Symbol.for('let'):
-          [bindings, exprs] = ast.slice(1);
-          let letEnv = new Env(env);
+    if (ast.length === 0) {
+      return ast;
+    }
 
-          for (let i = 0; i < bindings.length; i += 2) {
-            let key = bindings[i];
-            let value = bindings[i + 1];
+    switch (ast[0]) {
+    case Symbol.for('def'):
+      [key, value] = ast.slice(1);
+      return env.set(key, EVAL(value, env));
+    case Symbol.for('let'):
+      [bindings, exprs] = ast.slice(1);
+      let letEnv = new Env(env);
 
-            letEnv.set(key, EVAL(value, letEnv));
-          }
+      for (let i = 0; i < bindings.length; i += 2) {
+        let key = bindings[i];
+        let value = bindings[i + 1];
 
-          env = letEnv;
-          ast = exprs;
-          continue;
-        case Symbol.for('do'):
-          exprs = ast.slice(1, ast.length - 1);
-          let results = exprs.map((expr) => {
-            return evalAst(expr, env);
-          });
-
-          ast = ast[ast.length - 1];
-          continue;
-        case Symbol.for('if'):
-          let [cond, thenExprs, elseExprs] = ast.slice(1);
-          let result = EVAL(cond, env);
-
-          if (result !== null && result !== false) {
-            ast = thenExprs;
-            continue;
-          } else {
-            ast = elseExprs;
-            continue;
-          }
-        case Symbol.for('fn'):
-          let fn = function () {
-            let [bindings, body] = ast.slice(1);
-            let closureEnv = new Env(env, bindings, Array.from(arguments));
-
-            return EVAL(body, closureEnv);
-          };
-
-          Object.assign(fn, {
-            ast: ast[2],
-            params: ast[1],
-            env,
-            isMacro: false
-          });
-
-          return fn;
-        case Symbol.for('quote'):
-          return ast[1];
-        case Symbol.for('quasiquote'):
-          ast = quasiquote(ast[1]);
-          continue;
-        case Symbol.for('defmacro'):
-          [key, value] = ast.slice(1);
-          let func = EVAL(value, env);
-          func.isMacro = true;
-          console.log("FUNK: ", util.inspect(func, false, null));
-          return env.set(key, func);
-        case Symbol.for('macroexpand'):
-          return macroexpand(ast[1], env);
-        default:
-          let [f, ...args] = evalAst(ast, env);
-
-          if (f.ast) {
-            env = new Env(f.env, f.params, args);
-            ast = f.ast;
-            continue;
-          } else {
-            return f.apply(f, args);
-          }
-        }
+        letEnv.set(key, EVAL(value, letEnv));
       }
-    } else {
-      return evalAst(ast, env);
+
+      env = letEnv;
+      ast = exprs;
+      break;
+    case Symbol.for('do'):
+      exprs = ast.slice(1, ast.length - 1);
+      let results = exprs.map((expr) => {
+        return evalAst(expr, env);
+      });
+
+      ast = ast[ast.length - 1];
+      continue;
+    case Symbol.for('if'):
+      let [cond, thenExprs, elseExprs] = ast.slice(1);
+      let result = EVAL(cond, env);
+
+      if (result !== null && result !== false) {
+        ast = thenExprs;
+        break;
+      } else {
+        ast = elseExprs;
+        break;
+      }
+    case Symbol.for('fn'):
+      let fn = function () {
+        let [bindings, body] = ast.slice(1);
+        let closureEnv = new Env(env, bindings, Array.from(arguments));
+
+        return EVAL(body, closureEnv);
+      };
+
+      Object.assign(fn, {
+        ast: ast[2],
+        params: ast[1],
+        env,
+        isMacro: false
+      });
+
+      return fn;
+    case Symbol.for('quote'):
+      return ast[1];
+    case Symbol.for('quasiquote'):
+      ast = quasiquote(ast[1]);
+      break;
+    case Symbol.for('defmacro'):
+      [key, value] = ast.slice(1);
+      let func = EVAL(value, env);
+      func.isMacro = true;
+
+      return env.set(key, func);
+    case Symbol.for('macroexpand'):
+      return macroexpand(ast[1], env);
+    default:
+      let [f, ...args] = evalAst(ast, env);
+
+      if (f.ast) {
+        env = new Env(f.env, f.params, args);
+        ast = f.ast;
+        break;
+      } else {
+        return f.apply(f, args);
+      }
     }
   }
 };
 
 const PRINT = (exp) => {
   debug("PRINT", exp);
-  console.log("EXP: ", exp);
+
   return printStr(exp);
 };
 

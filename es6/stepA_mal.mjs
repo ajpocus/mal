@@ -53,7 +53,7 @@ const eval_ast = (ast, env) => {
 
 const EVAL = (ast, env) => {
   while (true) {
-    //console.log('EVAL:', pr_str(ast, true))
+    console.log('EVAL:', pr_str(ast, true))
     if (!_list_Q(ast)) { return eval_ast(ast, env) }
 
     ast = macroexpand(ast, env)

@@ -44,8 +44,7 @@ function printStr(data, printReadably = true) {
   if (printReadably) {
     console.log(str);
   } else {
-    process.stdout.write(str);
-    console.log();
+    process.stdout.write(`${str}\n`);
   }
 }
 
