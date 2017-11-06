@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const fs = require('fs');
 const util = require('util');
 const { printStr } = require('./printer');

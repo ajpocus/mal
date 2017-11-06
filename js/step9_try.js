@@ -155,6 +155,20 @@ const EVAL = (ast, env) => {
       return env.set(key, func);
     case Symbol.for('macroexpand'):
       return macroexpand(ast[1], env);
+    case Symbol.for('try'):
+      try {
+        value = EVAL(ast[1]);
+      } catch (err) {
+        console.log(ast);
+        let catchBlock = ast[2];
+        let errEnv = env.copy();
+        errEnv.set(catchBlock[1], err);
+        ast = catchBlock[2];
+        env = errEnv;
+        break;
+      }
+
+      return value;
     default:
       let [f, ...args] = evalAst(ast, env);
 
@@ -193,7 +207,7 @@ rep('(defmacro or (fn (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs)
       try {
         rep(line);
       } catch (err) {
-        console.log(err.message);
+        console.log(err.stack);
       }
     }
   }

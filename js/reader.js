@@ -35,6 +35,15 @@ function tokenize(str) {
     results.push(match);
   }
 
+  let openParens = _.filter(results, (str) => str === '(').length;
+  let closeParens = _.filter(results, (str) => str === ')').length;
+
+  if (openParens > closeParens) {
+    throw new Error("Expected ')', got EOFnothin'");
+  } else if (closeParens > openParens) {
+    throw new Error("Expected '(' before ')'");
+  }
+
   return results;
 }
 

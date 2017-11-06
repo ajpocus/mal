@@ -52,6 +52,10 @@ class Env {
       return false;
     }
   }
+
+  copy() {
+    return new Env(this);
+  }
 }
 
 exports = module.exports = Env;

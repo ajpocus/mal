@@ -28,6 +28,10 @@ function repr(data) {
   case Atom:
     str = '#<atom>';
     break;
+  case Error:
+    str = data.stack;
+    console.log("STACK: ", str);
+    break;
   case Boolean:
   case Number:
   default:
