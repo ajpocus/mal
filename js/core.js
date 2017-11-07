@@ -115,6 +115,9 @@ let ns = {
     } catch (err) {
       return [];
     }
+  },
+  [Symbol.for('throw')]: (val) => {
+    throw val;
   }
 };
 
