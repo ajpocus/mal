@@ -118,6 +118,24 @@ let ns = {
   },
   [Symbol.for('throw')]: (val) => {
     throw val;
+  },
+  [Symbol.for('apply')]: (fn, ...args) => {
+    return fn.apply(args);
+  },
+  [Symbol.for('map')]: (fn, lst) => {
+    return lst.map(fn);
+  },
+  [Symbol.for('nil?')]: (form) => {
+    return form === null || typeof form === 'undefined';
+  },
+  [Symbol.for('true?')]: (form) => {
+    return form === true;
+  },
+  [Symbol.for('false?')]: (form) => {
+    return form === false;
+  },
+  [Symbol.for('symbol?')]: (form) => {
+    return form.constructor === Symbol;
   }
 };
 
