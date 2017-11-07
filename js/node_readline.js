@@ -12,16 +12,16 @@ let rllib = ffi.Library(RL_LIB, {
 
 let rlHistoryLoaded = false;
 
-async function readline(prompt) {
+function readline(prompt) {
   prompt = prompt || 'user> ';
 
   if (!rlHistoryLoaded) {
     rlHistoryLoaded = true;
 
     let lines = [];
-    let fileExists = await fs.exists(HISTORY_FILE);
+    let fileExists = fs.existsSync(HISTORY_FILE);
     if (fileExists) {
-      let content = await fs.readFile(HISTORY_FILE);
+      let content = fs.readFileSync(HISTORY_FILE);
       lines = content.toString().split("\n");
     }
 
@@ -35,7 +35,7 @@ async function readline(prompt) {
 
   let line = rllib.readline(prompt);
   try {
-    await fs.appendFile(HISTORY_FILE, line + "\n");
+    fs.appendFileSync(HISTORY_FILE, line + "\n");
   } catch (err) {
     console.log(err);
   }

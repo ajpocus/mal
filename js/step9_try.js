@@ -157,15 +157,13 @@ const EVAL = (ast, env) => {
       return macroexpand(ast[1], env);
     case Symbol.for('try'):
       try {
-        value = EVAL(ast[1]);
+        value = EVAL(ast[1], env);
       } catch (err) {
-        console.log(ast);
         let catchBlock = ast[2];
-        let errEnv = env.copy();
+        let errEnv = new Env(env);
         errEnv.set(catchBlock[1], err);
-        ast = catchBlock[2];
-        env = errEnv;
-        break;
+
+        return EVAL(catchBlock[2], errEnv);
       }
 
       return value;
@@ -196,9 +194,9 @@ rep('(def load-file (fn (f) (eval (read-string (str "(do " (slurp f) ")")))))');
 rep(`(defmacro cond (fn (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw "odd number of forms to cond")) (cons 'cond (rest (rest xs)))))))`);
 rep('(defmacro or (fn (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) `(let (or_FIXME ~(first xs)) (if or_FIXME or_FIXME (or ~@(rest xs))))))))');
 
-(async function () {
+(function () {
   while (true) {
-    let line = await readline();
+    let line = readline();
     if (line === null) {
       break;
     }
