@@ -1,9 +1,10 @@
 const _ = require('lodash');
 const fs = require('fs');
 const util = require('util');
+const { zip } = require('./tools');
 const { printStr } = require('./printer');
 const { readInput } = require('./reader');
-const { Atom } = require('./types');
+const { Atom } = require('./atom');
 
 let ns = {
   [Symbol.for('+')]: (a, b) => { return a + b; },
@@ -136,6 +137,15 @@ let ns = {
   },
   [Symbol.for('symbol?')]: (form) => {
     return form.constructor === Symbol;
+  },
+  [Symbol.for('symbol')]: (str) => {
+    return Symbol.for(str);
+  },
+  [Symbol.for('keyword')]: (str) => {
+    return new Keyword(str);
+  },
+  [Symbol.for('keyword?')]: (form) => {
+    return form.constructor === Keyword;
   }
 };
 

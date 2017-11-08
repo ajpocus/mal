@@ -1,6 +1,5 @@
 const _ = require('lodash');
-const { Keyword, Vector, HashMap } = require('./types');
-const { zip } = require('./util');
+const { zip } = require('./tools');
 
 class Reader {
   constructor(tokens) {
@@ -58,9 +57,9 @@ function readForm(reader) {
   case '(':
     return readList(reader);
   case '[':
-    return readVector(reader);
+    return [Symbol.for('list'), readForm(reader)];
   case '{':
-    return readHashMap(reader);
+    return readObject(reader);
   case '@':
     reader.next();
     return [Symbol.for('deref'), readForm(reader)];
@@ -116,8 +115,8 @@ function readVector(reader) {
   return new Vector(readSequence(reader, '[', ']'));
 }
 
-function readHashMap(reader) {
-  return new HashMap(zip(readSequence(reader, '{', '}')));
+function readObject(reader) {
+  return zip(readSequence(reader, '{', '}'));
 }
 
 function readAtom(reader) {
@@ -132,7 +131,7 @@ function readAtom(reader) {
       return char === 'n' ? "\n" : char;
     });
   } else if (token[0] === ':') {
-    return new Keyword(token);
+    return String.fromCharCode(0x29e) + token.slice(1);
   } else if (token[0] === ';') {
     return null;
   } else if (token === 'nil') {
@@ -141,7 +140,7 @@ function readAtom(reader) {
     return true;
   } else if (token === 'false') {
     return false;
-  } else { // symbol
+  } else {
     return Symbol.for(token);
   }
 }

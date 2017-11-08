@@ -1,7 +1,8 @@
 const process = require('process');
 const util = require('util');
 const _ = require('lodash');
-const { Keyword, Vector, HashMap, Atom } = require('./types');
+const { isKeyword, zip } = require("./tools");
+const { Atom } = require('./atom');
 
 function repr(data) {
   let str;
@@ -10,17 +11,25 @@ function repr(data) {
 
   switch (data.constructor) {
   case String:
-    str = `"${data}"`;
+    if (isKeyword(data)) {
+      str = `:${data.slice(1)}`;
+    } else {
+      str = `"${data}"`;
+    }
+
     break;
   case Array:
-  case Vector:
     str = `(${data.map(repr).join(' ')})`;
     break;
-  case Keyword:
-    str = data.slice(1);
-    break;
-  case HashMap:
-    str = util.inspect(data, false, null);
+  case Object:
+    let keys = Object.getOwnPropertySymbols(data);
+    let pairs = [].concat(keys.map((sym) => {
+      let newSym = Symbol.for(':' + sym.toString().slice(1));
+      return [newSym, data[sym]];
+    }));
+    let obj = zip(pairs);
+
+    str = util.inspect(obj, false, null);
     break;
   case Function:
     str = `#<function ${data.name || 'anonymous'}>`;
@@ -30,7 +39,6 @@ function repr(data) {
     break;
   case Error:
     str = data.stack;
-    console.log("STACK: ", str);
     break;
   case Boolean:
   case Number:

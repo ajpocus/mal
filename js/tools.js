@@ -1,7 +1,8 @@
 const util = require('util');
 const _ = require('lodash');
 
-function zip(pairList) {
+exports.zip = function zip(pairList) {
+  console.log(pairList);
   if (pairList.length % 2 !== 0) {
     let errorMsg = 'Error: The list provided to zip must have an even number of elements';
     console.log(errorMsg);
@@ -14,9 +15,9 @@ function zip(pairList) {
   }
 
   return obj;
-}
+};
 
-function debug(...things) {
+exports.debug = function debug(...things) {
   if (process.env.DEBUG && !_.isNil(things)) {
     things.forEach((thing) => {
       if (_.isNil(thing)) { return; }
@@ -30,10 +31,12 @@ function debug(...things) {
   }
 
   return process.env.DEBUG;
-}
+};
 
-function isPair(lst) {
+exports.isPair = function isPair(lst) {
   return lst.constructor === Array && lst.length > 0;
-}
+};
 
-exports = module.exports = { zip, debug, isPair };
+exports.isKeyword = function isKeyword(form) {
+  return form.constructor === String && form[0] === String.fromCharCode(0x29e);
+};

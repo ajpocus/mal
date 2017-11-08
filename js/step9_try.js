@@ -3,10 +3,9 @@ const util = require('util');
 const { readline } = require('./node_readline');
 const { readInput } = require('./reader');
 const { printStr } = require('./printer');
-const { Keyword, Vector, HashMap } = require('./types');
 const { ns } = require('./core');
 const Env = require('./env');
-const { debug, isPair } = require('./util');
+const { debug, isPair } = require('./tools');
 
 let env = new Env();
 let keys = Object.getOwnPropertySymbols(ns);
@@ -26,7 +25,6 @@ function evalAst(ast, env) {
   case Symbol:
     return env.get(ast);
   case Array:
-  case Vector:
     return ast.map((a) => { return EVAL(a, env); });
   default:
     return ast;
