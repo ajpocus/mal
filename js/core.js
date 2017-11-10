@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const fs = require('fs');
 const util = require('util');
-const { zip } = require('./tools');
+const { zip, keysForObject } = require('./tools');
 const { printStr } = require('./printer');
 const { readInput } = require('./reader');
 const { Atom } = require('./atom');
@@ -159,6 +159,25 @@ let ns = {
   },
   [Symbol.for('assoc')]: (hashMap, ...pairs) => {
     return Object.assign({}, hashMap, zip(pairs));
+  },
+  [Symbol.for('dissoc')]: (hashMap, ...keys) => {
+    let newHashMap = Object.assign({}, hashMap);
+
+    keys.forEach((key) => { delete newHashMap[key]; });
+
+    return newHashMap;
+  },
+  [Symbol.for('get')]: (hashMap, key) => {
+    return hashMap[key];
+  },
+  [Symbol.for('contains?')]: (hashMap, key) => {
+    return !_.isNil(hashMap[key]);
+  },
+  [Symbol.for('keys')]: (hashMap) => {
+    return keysForObject(hashMap);
+  },
+  [Symbol.for('vals')]: (hashMap) => {
+    return keysForObject(hashMap).map((key) => hashMap[key]);
   }
 };
 

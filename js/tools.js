@@ -43,3 +43,11 @@ exports.isKeyword = function isKeyword(form) {
 exports.flatten = function flatten(arr) {
   return [].concat.apply([], arr);
 };
+
+exports.keysForObject = function keysForObject(obj) {
+  let keys = Object.keys(obj);
+  let symKeys = Object.getOwnPropertySymbols(obj);
+  keys.concat(symKeys);
+  keys = keys.filter((key) => { return !key.match(/^__/); });
+  return keys;
+};

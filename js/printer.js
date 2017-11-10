@@ -1,7 +1,7 @@
 const process = require('process');
 const util = require('util');
 const _ = require('lodash');
-const { isKeyword, zip, flatten } = require("./tools");
+const { isKeyword, zip, flatten, keysForObject } = require("./tools");
 const { Atom } = require('./atom');
 
 function repr(data) {
@@ -22,10 +22,7 @@ function repr(data) {
     str = `(${data.map(repr).join(' ')})`;
     break;
   case Object:
-    let keys = Object.keys(data);
-    let symKeys = Object.getOwnPropertySymbols(data);
-    keys.concat(symKeys);
-
+    let keys = keysForObject(data);
     let pairs = keys.map((key) => {
       let newKey = key.toString();
       if (newKey.match(/^__/)) {
