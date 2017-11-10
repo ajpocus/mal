@@ -3,7 +3,9 @@ const _ = require('lodash');
 class Env {
   constructor(outer, binds, exprs) {
     this.outer = outer;
-    this.data = {};
+    this.data = {
+      [Symbol.for('*host-language*')]: 'Javascript'
+    };
 
     if (!_.isNil(binds) && !_.isNil(exprs)) {
       for (let i = 0; i < binds.length; i++) {

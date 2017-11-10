@@ -51,3 +51,15 @@ exports.keysForObject = function keysForObject(obj) {
   keys = keys.filter((key) => { return !key.match(/^__/); });
   return keys;
 };
+
+exports.clone = function (fn) {
+  let temp = (...args) => { return fn.apply(fn, args); };
+
+  for (let key in fn) {
+    if (fn.hasOwnProperty(key)) {
+      temp[key] = fn[key];
+    }
+  }
+
+  return temp;
+};

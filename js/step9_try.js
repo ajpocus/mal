@@ -136,7 +136,8 @@ const EVAL = (ast, env) => {
         ast: ast[2],
         params: ast[1],
         env,
-        isMacro: false
+        isMacro: false,
+        meta: null
       });
 
       return fn;
@@ -186,11 +187,13 @@ const PRINT = (exp) => {
 };
 
 const rep = str => PRINT(EVAL(READ(str), env));
+const ep = str => EVAL(READ(str), env);
 
-rep('(def not (fn (a) (if a false true)))');
-rep('(def load-file (fn (f) (eval (read-string (str "(do " (slurp f) ")")))))');
-rep(`(defmacro cond (fn (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw "odd number of forms to cond")) (cons 'cond (rest (rest xs)))))))`);
-rep('(defmacro or (fn (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) `(let (or_FIXME ~(first xs)) (if or_FIXME or_FIXME (or ~@(rest xs))))))))');
+ep('(def not (fn (a) (if a false true)))');
+ep('(def load-file (fn (f) (eval (read-string (str "(do " (slurp f) ")")))))');
+ep(`(defmacro cond (fn (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw "odd number of forms to cond")) (cons 'cond (rest (rest xs)))))))`);
+ep('(defmacro or (fn (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) `(let (or_FIXME ~(first xs)) (if or_FIXME or_FIXME (or ~@(rest xs))))))))');
+rep('(println (str "Mal [" *host-language* "]"))');
 
 (function () {
   while (true) {

@@ -7,6 +7,7 @@ const { readInput } = require('./reader');
 const { Atom } = require('./atom');
 const { newKeyword } = require('./types');
 const { KEYWORD_PREFIX } = require('./constants');
+const { readline } = require('./node_readline');
 
 let ns = {
   [Symbol.for('+')]: (a, b) => { return a + b; },
@@ -178,6 +179,15 @@ let ns = {
   },
   [Symbol.for('vals')]: (hashMap) => {
     return keysForObject(hashMap).map((key) => hashMap[key]);
+  },
+  [Symbol.for('readline')]: (prompt) => {
+    return readline(prompt);
+  },
+  [Symbol.for('meta')]: (fn) => {
+    return fn.meta;
+  },
+  [Symbol.for('with-meta')]: (fn, meta) => {
+    return Object.assign({}, fn, { meta });
   }
 };
 

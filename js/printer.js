@@ -21,6 +21,15 @@ function repr(data) {
   case Array:
     str = `(${data.map(repr).join(' ')})`;
     break;
+  case Function:
+    str = `#<function ${data.name || 'anonymous'}>`;
+    break;
+  case Atom:
+    str = '#<atom>';
+    break;
+  case Error:
+    str = data.stack;
+    break;
   case Object:
     let keys = keysForObject(data);
     let pairs = keys.map((key) => {
@@ -37,15 +46,6 @@ function repr(data) {
     let obj = zip(flatten(pairs));
 
     str = util.inspect(obj);
-    break;
-  case Function:
-    str = `#<function ${data.name || 'anonymous'}>`;
-    break;
-  case Atom:
-    str = '#<atom>';
-    break;
-  case Error:
-    str = data.stack;
     break;
   case Boolean:
   case Number:
