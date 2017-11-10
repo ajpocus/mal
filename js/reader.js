@@ -116,7 +116,9 @@ function readVector(reader) {
 }
 
 function readObject(reader) {
-  return zip(readSequence(reader, '{', '}'));
+  let obj = zip(readSequence(reader, '{', '}'));
+  obj.__isHashMap = true;
+  return obj;
 }
 
 function readAtom(reader) {

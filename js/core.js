@@ -150,7 +150,15 @@ let ns = {
     return form[0] === KEYWORD_PREFIX;
   },
   [Symbol.for('hash-map')]: (...pairs) => {
-    return zip(pairs);
+    let obj = zip(pairs);
+    obj.__isHashmap = true;
+    return obj;
+  },
+  [Symbol.for('hash-map?')]: (obj) => {
+    return obj.__isHashmap === true;
+  },
+  [Symbol.for('assoc')]: (hashMap, ...pairs) => {
+    return Object.assign({}, hashMap, zip(pairs));
   }
 };
 

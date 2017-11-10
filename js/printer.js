@@ -28,6 +28,10 @@ function repr(data) {
 
     let pairs = keys.map((key) => {
       let newKey = key.toString();
+      if (newKey.match(/^__/)) {
+        return [];
+      }
+
       if (isKeyword(newKey)) {
         newKey = ':' + newKey.slice(1);
       }
