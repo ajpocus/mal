@@ -148,6 +148,9 @@ let ns = {
   },
   [Symbol.for('keyword?')]: (form) => {
     return form[0] === KEYWORD_PREFIX;
+  },
+  [Symbol.for('hash-map')]: (...pairs) => {
+    return zip(pairs);
   }
 };
 

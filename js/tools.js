@@ -3,10 +3,8 @@ const _ = require('lodash');
 const { KEYWORD_PREFIX } = require('./constants');
 
 exports.zip = function zip(pairList) {
-  console.log(pairList);
   if (pairList.length % 2 !== 0) {
     let errorMsg = 'Error: The list provided to zip must have an even number of elements';
-    console.log(errorMsg);
     throw new Error(errorMsg);
   }
 

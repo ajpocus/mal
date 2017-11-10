@@ -25,19 +25,17 @@ function repr(data) {
     let keys = Object.keys(data);
     let symKeys = Object.getOwnPropertySymbols(data);
     keys.concat(symKeys);
-    console.log("KEYS: ", keys);
 
     let pairs = keys.map((key) => {
       let newKey = key.toString();
       if (isKeyword(newKey)) {
         newKey = ':' + newKey.slice(1);
-        console.log("NEW KEY: ", newKey);
       }
       return [newKey, data[key]];
     });
     let obj = zip(flatten(pairs));
 
-    str = util.inspect(obj, false, null);
+    str = util.inspect(obj);
     break;
   case Function:
     str = `#<function ${data.name || 'anonymous'}>`;
