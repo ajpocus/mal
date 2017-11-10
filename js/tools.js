@@ -1,5 +1,6 @@
 const util = require('util');
 const _ = require('lodash');
+const { KEYWORD_PREFIX } = require('./constants');
 
 exports.zip = function zip(pairList) {
   console.log(pairList);
@@ -38,5 +39,9 @@ exports.isPair = function isPair(lst) {
 };
 
 exports.isKeyword = function isKeyword(form) {
-  return form.constructor === String && form[0] === String.fromCharCode(0x29e);
+  return form.constructor === String && form[0] === KEYWORD_PREFIX;
+};
+
+exports.flatten = function flatten(arr) {
+  return [].concat.apply([], arr);
 };

@@ -5,6 +5,8 @@ const { zip } = require('./tools');
 const { printStr } = require('./printer');
 const { readInput } = require('./reader');
 const { Atom } = require('./atom');
+const { newKeyword } = require('./types');
+const { KEYWORD_PREFIX } = require('./constants');
 
 let ns = {
   [Symbol.for('+')]: (a, b) => { return a + b; },
@@ -142,10 +144,10 @@ let ns = {
     return Symbol.for(str);
   },
   [Symbol.for('keyword')]: (str) => {
-    return new Keyword(str);
+    return newKeyword(str);
   },
   [Symbol.for('keyword?')]: (form) => {
-    return form.constructor === Keyword;
+    return form[0] === KEYWORD_PREFIX;
   }
 };
 
