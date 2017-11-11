@@ -14,7 +14,7 @@ function repr(data) {
     if (isKeyword(data)) {
       str = `:${data.slice(1)}`;
     } else {
-      str = `"${data}"`;
+      str = data;
     }
 
     break;
@@ -49,6 +49,7 @@ function repr(data) {
     break;
   case Boolean:
   case Number:
+  case Symbol:
   default:
     str = data.toString();
     break;
@@ -67,4 +68,4 @@ function printStr(data, printReadably = true) {
   }
 }
 
-exports = module.exports = { printStr };
+exports = module.exports = { printStr, repr };

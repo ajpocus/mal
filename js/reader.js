@@ -38,7 +38,7 @@ function tokenize(str) {
   let closeParens = _.filter(results, (str) => str === ')').length;
 
   if (openParens > closeParens) {
-    throw new Error("Expected ')', got EOFnothin'");
+    throw new Error("Expected ')', got EOF");
   } else if (closeParens > openParens) {
     throw new Error("Expected '(' before ')'");
   }

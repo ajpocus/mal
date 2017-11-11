@@ -1,8 +1,8 @@
 const _ = require('lodash');
 const fs = require('fs');
 const util = require('util');
-const { zip, keysForObject } = require('./tools');
-const { printStr } = require('./printer');
+const { zip, keysForObject, cloneFunction } = require('./tools');
+const { printStr, repr } = require('./printer');
 const { readInput } = require('./reader');
 const { Atom } = require('./atom');
 const { newKeyword } = require('./types');
@@ -54,7 +54,7 @@ let ns = {
     return args.join('');
   },
   [Symbol.for('prn')]: (...args) => {
-    let str = args.join(' ');
+    let str = args.map(repr).join(' ');
     printStr(str, false);
 
     return null;
@@ -187,8 +187,21 @@ let ns = {
     return fn.meta;
   },
   [Symbol.for('with-meta')]: (fn, meta) => {
-    return Object.assign({}, fn, { meta });
-  }
+    return cloneFunction(fn, meta);
+  },
+  [Symbol.for('time')]: () => {
+    return new Date().getTime();
+  },
+  [Symbol.for('push')]: (lst, el) => {
+    lst.push(el);
+    return lst;
+  },
+  [Symbol.for('pop')]: (lst) => lst.pop(),
+  [Symbol.for('unshift')]: (lst, el) => {
+    lst.unshift(el);
+    return lst;
+  },
+  [Symbol.for('shift')]: (lst) => lst.shift()
 };
 
 exports = module.exports = { ns };
