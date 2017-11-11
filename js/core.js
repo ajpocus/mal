@@ -144,7 +144,7 @@ let ns = {
   [Symbol.for('time')]: () => new Date().getTime(),
   [Symbol.for('push')]: (lst, el) => {
     lst.push(el);
-    return lst;j
+    return lst;
   },
   [Symbol.for('pop')]: (lst) => lst.pop(),
   [Symbol.for('unshift')]: (lst, el) => {
