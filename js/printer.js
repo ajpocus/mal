@@ -4,7 +4,7 @@ const _ = require('lodash');
 const { isKeyword, zip, flatten, keysForObject } = require("./tools");
 const { Atom } = require('./atom');
 
-function repr(data) {
+function repr(data, wrapStrings = true) {
   let str;
 
   if (_.isNil(data)) { return 'nil'; }
@@ -14,7 +14,11 @@ function repr(data) {
     if (isKeyword(data)) {
       str = `:${data.slice(1)}`;
     } else {
-      str = data;
+      if (wrapStrings) {
+        str = `"${data}"`;
+      } else {
+        str = data;
+      }
     }
 
     break;
@@ -59,7 +63,8 @@ function repr(data) {
 }
 
 function printStr(data, printReadably = true) {
-  let str = repr(data);
+  let wrapStrings = !printReadably;
+  let str = repr(data, wrapStrings);
 
   if (printReadably) {
     console.log(str);

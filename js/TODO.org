@@ -1,6 +1,14 @@
 * DONE fix string functions
   CLOSED: [2017-10-31 Tue 10:17]
-* TODO fix function naming in printer
-* TODO get rid of vectors
-* TODO fix exception handling
-* TODO keep track of parens
+* DONE get rid of vectors
+* DONE fix exception handling
+* DONE keep track of parens
+* DONE reformat the one-liner functions
+* TODO fix quotes on printed output
+* TODO macro: defn
+** TODO fix function naming in printer
+* TODO macro: and
+* TODO macro: some?
+* TODO macro: every?
+* TODO support for user-defined reader macros
+* TODO reader macro: with-meta
