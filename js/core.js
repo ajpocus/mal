@@ -18,19 +18,7 @@ let ns = {
   [Symbol.for('list?')]: (form) => form.constructor === Array,
   [Symbol.for('empty?')]: (lst) => lst.length === 0,
   [Symbol.for('count')]: (lst) => lst.length,
-  [Symbol.for('=')]: (form1, form2) => {
-    if (form1.constructor === Array && form2.constructor === Array) {
-      if (form1.length === form2.length) {
-        return _.every(form1, (form, idx) => {
-          return form === form2[idx];
-        });
-      } else {
-        return false;
-      }
-    } else {
-      return form1.constructor === form2.constructor && form1 === form2;
-    }
-  },
+  [Symbol.for('=')]: (form1, form2) => _.isEqual(form1, form2),
   [Symbol.for('<')]: (a, b) => a < b,
   [Symbol.for('<=')]: (a, b) => a <= b,
   [Symbol.for('>')]: (a, b) => a > b,
